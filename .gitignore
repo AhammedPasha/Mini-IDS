@@ -1,0 +1,32 @@
+# Environment secrets
+.env
+.env.*
+
+# Python virtual environments
+.venv/
+.venv312/
+.venv-linux/
+.venv-linux314/
+
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.bak
+*.tmp
+# Project archives
+*.zip

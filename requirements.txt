@@ -1,0 +1,12 @@
+scapy
+pandas
+numpy
+streamlit
+plotly
+pytest
+python-dotenv
+httpx
+websockets
+reportlab
+fastapi
+uvicorn
