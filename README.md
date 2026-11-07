@@ -1,7 +1,5 @@
 ﻿# Mini Intrusion Detection System (Mini IDS)
 
-**NETCRAFTZ Internship Project**
-
 ## 1. Project Overview
 
 Mini Intrusion Detection System (Mini IDS) is a Python-based network security application designed to analyze network traffic, identify suspicious activities, and manage security alerts.
@@ -120,12 +118,9 @@ SQLite is used to maintain persistent security information, including alerts and
 - Live packet capture depends on operating-system support and packet-capture libraries.
 - This project is an internship-level security monitoring prototype, not a replacement for a fully managed enterprise IDS/SOC platform.
 
-## 11. Internship Information
+## 11. Project Information
 
-**Organization:** NETCRAFTZ  
 **Project:** Mini Intrusion Detection System  
 **Category:** Network Security / Cybersecurity
 
 ---
-
-*Developed as part of an internship project at NETCRAFTZ.*
