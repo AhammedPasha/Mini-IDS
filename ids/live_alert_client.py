@@ -1,13 +1,26 @@
 
 import asyncio
 import json
+import os
 import queue
 import threading
 
 import websockets
 
 
-WS_URL = "ws://127.0.0.1:8000/ws/alerts"
+def _get_ws_url():
+    """Get WebSocket URL from environment or Streamlit secrets."""
+
+    url = os.getenv("IDS_WS_URL")
+
+    if not url:
+        try:
+            import streamlit as st
+            url = st.secrets.get("IDS_WS_URL")
+        except Exception:
+            url = None
+
+    return url or "ws://127.0.0.1:8000/ws/alerts"
 
 
 def _put_event(events, event):
@@ -26,13 +39,16 @@ def _put_event(events, event):
             pass
 
 
-async def _listen(events, stop_event):
+async def _listen(events, stop_event, ws_url=None):
     """Connect and reconnect to the IDS WebSocket server."""
+
+    if ws_url is None:
+        ws_url = _get_ws_url()
 
     while not stop_event.is_set():
         try:
             async with websockets.connect(
-                WS_URL,
+                ws_url,
                 ping_interval=20,
                 ping_timeout=20,
                 open_timeout=5,
@@ -70,8 +86,8 @@ async def _listen(events, stop_event):
             await asyncio.sleep(3)
 
 
-def _listener_worker(events, stop_event):
-    asyncio.run(_listen(events, stop_event))
+def _listener_worker(events, stop_event, ws_url=None):
+    asyncio.run(_listen(events, stop_event, ws_url))
 
 
 def start_listener():
@@ -80,9 +96,11 @@ def start_listener():
     events = queue.Queue(maxsize=500)
     stop_event = threading.Event()
 
+    ws_url = _get_ws_url()
+
     thread = threading.Thread(
         target=_listener_worker,
-        args=(events, stop_event),
+        args=(events, stop_event, ws_url),
         daemon=True,
     )
 

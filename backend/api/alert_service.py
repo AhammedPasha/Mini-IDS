@@ -9,8 +9,32 @@ from ids.database import save_alerts_returning
 
 load_dotenv()
 
-API_BASE_URL = os.getenv("IDS_API_BASE_URL", "http://127.0.0.1:8000")
-INTERNAL_API_TOKEN = os.getenv("IDS_INTERNAL_API_TOKEN")
+
+def get_config_value(key: str, default: str | None = None):
+    """Read configuration from environment variables or Streamlit secrets."""
+
+    value = os.getenv(key)
+
+    if value:
+        return value
+
+    try:
+        import streamlit as st
+        value = st.secrets.get(key)
+        if value:
+            return str(value)
+    except Exception:
+        pass
+
+    return default
+
+
+API_BASE_URL = get_config_value(
+    "IDS_API_BASE_URL",
+    "http://127.0.0.1:8000"
+).rstrip("/")
+
+INTERNAL_API_TOKEN = get_config_value("IDS_INTERNAL_API_TOKEN")
 
 
 async def save_and_broadcast_alerts(
@@ -20,6 +44,7 @@ async def save_and_broadcast_alerts(
     detection_source: str = "packet",
 ) -> int:
     """Save new alerts and publish them through the running FastAPI server."""
+
     inserted_alerts = save_alerts_returning(
         alerts=alerts,
         capture_name=capture_name,
@@ -43,6 +68,7 @@ async def save_and_broadcast_alerts(
                 headers=headers,
                 json={"alert": alert},
             )
+
             response.raise_for_status()
             published_count += 1
 
